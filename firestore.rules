@@ -1,0 +1,13 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /catalogo/{id} {
+      allow read: if true;  // tus clientes ven el catálogo
+      allow create, update: if request.auth != null
+        && request.auth.token.email == 'TU_CORREO@gmail.com'  // solo tú publicas
+        && request.resource.data.json is string
+        && request.resource.data.json.size() < 1000000;
+      allow delete: if false;
+    }
+  }
+}
